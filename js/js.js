@@ -145,6 +145,7 @@ marker.enableDragging();                    //可以拖拽标注
 marker.addEventListener("dragend", function(e){ //增加点击监听事件
     alert("当前位置：" + e.point.lng + ", " + e.point.lat);
 })
+胡旭
 
 map.enableKeyboard();                      //开启键盘
 
