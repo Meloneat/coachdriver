@@ -2,7 +2,7 @@
  * Created by ShareUS on 2016/10/16.
  */
 var map = new BMap.Map("container");//在container容器中创建一个地图,参数container为div的id属性;
-/*控件、标注参数--start*/
+/*控件、标注和图层参数--start*/
 //缩略控件参数
 var navopt = [{type:BMAP_NAVIGATION_CONTROL_LARGE},{type:BMAP_NAVIGATION_CONTROL_SMALL}
                 ,{type:BMAP_NAVIGATION_CONTROL_PAN},{type:BMAP_NAVIGATION_CONTROL_ZOOM}]
@@ -19,7 +19,10 @@ var polyline = new BMap.Polyline([
     ],
     {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
 );
-/*控件、标注参数--end*/
+//图层参数
+var traffic = new BMap.TrafficLayer();        // 创建交通流量图层实例
+var tilelayer = new BMap.TileLayer();         // 创建自定义地图层实例
+/*控件、标注和图层参数--end*/
 
 /*设置控件位置--start*/
 
@@ -53,7 +56,7 @@ ZoomControl.prototype.initialize = function(map){
 /*自定义控件--end*/
 
 /*自定义函数--start*/
-map.addEventListener("click", function(e){
+map.addEventListener("click", function(e)   {
     PO_LNG = e.point.lng;
     PO_LAT = e.point.lat;
     console.warn("点击的坐标：" + e.point.lng + ", " + e.point.lat);
@@ -68,6 +71,19 @@ map.addEventListener("click", function(e){
     map.addOverlay(polyline_click);
 
 });
+//自定义图层
+/**********图层的自定义方法介绍****************************
+ TileLayer实例的getTilesUrl方法需要实现，用来告诉API取图规则。
+ getTilesUrl方法的参数包括tileCoord和zoom，其中tileCoord为图
+ 块的编号信息，zoom为图块的级别，每当地图需要显示特定级别的
+ 特定位置的图块时就会自动调用此方法（很重要，因为后期可能要
+ 建立各类热图）
+ ********************************************************/
+tilelayer.getTilesUrl = function(e){
+    return NULL;
+}
+huxu
+
 /*自定义函数--end*/
 
 /*自定义标注图形-start*/
@@ -117,10 +133,14 @@ map.addOverlay(polyline);                             // 将折线添加到地�
 map.openInfoWindow(infoWindow, map.getCenter());      // 将信息窗口添加到地图中
 /*添加覆盖物--end*/
 
-marker.addEventListener("click", function(){
+/*添加图层--start*/
+map.addTileLayer(traffic);                          //将图层添加到地图上
+/*添加图层--end*/
+
+//增加标注拖拽
+marker.addEventListener("click", function(){           //标注点击弹跳出文字框
     alert("hi");
 });
-//增加标注拖拽
 marker.enableDragging();                    //可以拖拽标注
 marker.addEventListener("dragend", function(e){ //增加点击监听事件
     alert("当前位置：" + e.point.lng + ", " + e.point.lat);
