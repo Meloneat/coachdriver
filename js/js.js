@@ -82,7 +82,7 @@ map.addEventListener("click", function(e)   {
 tilelayer.getTilesUrl = function(e){
     return NULL;
 }
-huxu
+
 
 /*自定义函数--end*/
 
@@ -108,7 +108,7 @@ function addMarker(point, index){  // 创建图标对象
 /*程序入口*/
 //创建地图
 var point = new BMap.Point(116.404, 39.915);//定位
-map.centerAndZoom(point,16);				//将point移到浏览器中心，并且zoom级别为15;
+map.centerAndZoom(point,5);				//将point移到浏览器中心，并且zoom级别为15;
 var marker = new BMap.Marker(point);        // 创建标注
 var infoWindow = new BMap.InfoWindow("World", infopt);  // 创建信息窗口对象
 //        map.setZoom(3);                     //设置缩放等级3-19.
@@ -130,7 +130,6 @@ map.addControl(new ZoomControl());                      //自定义控件，可�
 /*添加覆盖物--start*/
 map.addOverlay(marker);                               // 将标注添加到地图中
 map.addOverlay(polyline);                             // 将折线添加到地图中
-map.openInfoWindow(infoWindow, map.getCenter());      // 将信息窗口添加到地图中
 /*添加覆盖物--end*/
 
 /*添加图层--start*/
@@ -157,11 +156,11 @@ map.setMapStyle({
     style: 'midnight'
 });
 
-var randomCount = 1000;
+var randomCount = 100;
 
 var data = [];
 
-var citys = ["北京","天津","上海","重庆"];
+var citys = ["北京","天津","上海","重庆","马鞍山"];
 
 // 构造数据
 while (randomCount--) {
@@ -176,6 +175,8 @@ while (randomCount--) {
     });
 }
 
+//DasetSet是mapv中统一规范的数据对象，用来保存json数据对象。
+//可以增删改查数据，并且可以订阅数据修改事件。
 var dataSet = new mapv.DataSet(data);
 
 var options = {
