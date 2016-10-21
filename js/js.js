@@ -82,7 +82,7 @@ map.addEventListener("click", function(e)   {
 tilelayer.getTilesUrl = function(e){
     return NULL;
 }
-huxu
+
 
 /*自定义函数--end*/
 
