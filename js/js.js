@@ -145,10 +145,54 @@ marker.enableDragging();                    //可以拖拽标注
 marker.addEventListener("dragend", function(e){ //增加点击监听事件
     alert("当前位置：" + e.point.lng + ", " + e.point.lat);
 })
-机会
+
 map.enableKeyboard();                      //开启键盘
 
 console.warn("34")
 console.log("是否使用高分辨率底图：" + map.highResolutionEnabled());
 console.log("地图容器Element：" + map.getContainer());
 console.log("当前地图中心点：" + map.getSize());
+/*hottool*/
+map.setMapStyle({
+    style: 'midnight'
+});
+
+var randomCount = 1000;
+
+var data = [];
+
+var citys = ["北京","天津","上海","重庆"];
+
+// 构造数据
+while (randomCount--) {
+    var cityCenter = mapv.utilCityCenter.getCenterByCityName(citys[parseInt(Math.random() * citys.length)]);
+    data.push({
+        geometry: {
+            type: 'Point',
+            coordinates: [cityCenter.lng - 2 + Math.random() * 4, cityCenter.lat - 2 + Math.random() * 4]
+        },
+        count: 30 * Math.random(),
+        time: 100 * Math.random()
+    });
+}
+
+var dataSet = new mapv.DataSet(data);
+
+var options = {
+    size: 13,
+    gradient: { 0.25: "rgb(0,0,255)", 0.55: "rgb(0,255,0)", 0.85: "yellow", 1.0: "rgb(255,0,0)"},
+    max: 60,
+    animation: {
+        type: 'time',
+        stepsRange: {
+            start: 0,
+            end: 100
+        },
+        steps: 100,
+        trails: 10,
+        duration: 5
+    },
+    draw: 'heatmap'
+}
+
+var mapvLayer = new mapv.baiduMapLayer(map, dataSet, options);
