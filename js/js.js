@@ -1,5 +1,7 @@
 /**
  * Created by ShareUS on 2016/10/16.
+ * This page is by huxu for the Service_localsearch in Baidumap API.
+ * hi
  */
 var map = new BMap.Map("container");//在container容器中创建一个地图,参数container为div的id属性;
 /*控件、标注和图层参数--start*/
