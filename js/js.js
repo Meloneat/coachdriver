@@ -2,6 +2,11 @@
  * Created by ShareUS on 2016/10/16.
  * This page is by huxu for the Service_localsearch in Baidumap API.
  * hi
+ * 补充：BMap.LocalSearch提供本地搜索服务，在使用本地搜索时需要为其设置
+ * 一个检索区域，检索区域可以是BMap.Map对象、BMap.Point对象或者是省市名
+ * 称（比如："北京市"）的字符串。BMap.LocalSearch构造函数的第二个参数是
+ * 可选的，您可以在其中指定结果的呈现。BMap.RenderOptions类提供了若干控
+ * 制呈现的属性，其中map指定了结果所展现的地图实例，panel指定了结果列表的容器元素。
  */
 var map = new BMap.Map("container");//在container容器中创建一个地图,参数container为div的id属性;
 /*控件、标注和图层参数--start*/
@@ -12,7 +17,7 @@ var navopt = [{type:BMAP_NAVIGATION_CONTROL_LARGE},{type:BMAP_NAVIGATION_CONTROL
 var infopt = {
     width : 250,     // 信息窗口宽度
     height: 100,     // 信息窗口高度
-    title : "Hello"  // 信息窗口标题
+    title : "Wow..."  // 信息窗口标题
 }
 //折线图形参数
 var polyline = new BMap.Polyline([
@@ -22,14 +27,15 @@ var polyline = new BMap.Polyline([
     {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
 );
 //图层参数
-var traffic = new BMap.TrafficLayer();        // 创建交通流量图层实例
-var tilelayer = new BMap.TileLayer();         // 创建自定义地图层实例
+// var traffic = new BMap.TrafficLayer();        // 创建交通流量图层实例
+// var tilelayer = new BMap.TileLayer();         // 创建自定义地图层实例
 /*控件、标注和图层参数--end*/
 
 /*设置控件位置--start*/
 
 /*设置控件位置--end*/
 
+//LocalSearch_Service defination
 /*自定义控件-start*/
 function ZoomControl(){
     this.defaultAnchor = BMAP_ANCHOR_TOP_LEFT;
@@ -40,7 +46,7 @@ ZoomControl.prototype.initialize = function(map){
 // 创建一个DOM元素
     var div = document.createElement("div");
 // 添加文字说明
-    div.appendChild(document.createTextNode("放大"));
+    div.appendChild(document.createTextNode("boom"));
     // 设置样式
     div.style.cursor = "pointer";
     div.style.border = "1px solid gray";
@@ -58,21 +64,21 @@ ZoomControl.prototype.initialize = function(map){
 /*自定义控件--end*/
 
 /*自定义函数--start*/
-map.addEventListener("click", function(e)   {
-    PO_LNG = e.point.lng;
-    PO_LAT = e.point.lat;
-    console.warn("点击的坐标：" + e.point.lng + ", " + e.point.lat);
-    console.warn("点击的坐标：" + PO_LNG + ", " + PO_LAT);
-    var polyline_click = new BMap.Polyline([
-            new BMap.Point(116.399, 39.910),
-            new BMap.Point(PO_LNG, PO_LAT)
-        ],
-        {strokeColor:"green", strokeWeight:6, strokeOpacity:0.8}
-    );
-    ;
-    map.addOverlay(polyline_click);
-
-});
+// map.addEventListener("click", function(e)   {
+//     PO_LNG = e.point.lng;
+//     PO_LAT = e.point.lat;
+//     console.warn("点击的坐标：" + e.point.lng + ", " + e.point.lat);
+//     console.warn("点击的坐标：" + PO_LNG + ", " + PO_LAT);
+//     var polyline_click = new BMap.Polyline([
+//             new BMap.Point(116.399, 39.910),
+//             new BMap.Point(PO_LNG, PO_LAT)
+//         ],
+//         {strokeColor:"green", strokeWeight:6, strokeOpacity:0.8}
+//     );
+//     ;
+//     map.addOverlay(polyline_click);
+//
+// });
 //自定义图层
 /**********图层的自定义方法介绍****************************
  TileLayer实例的getTilesUrl方法需要实现，用来告诉API取图规则。
@@ -81,38 +87,46 @@ map.addEventListener("click", function(e)   {
  特定位置的图块时就会自动调用此方法（很重要，因为后期可能要
  建立各类热图）
  ********************************************************/
-tilelayer.getTilesUrl = function(e){
-    return NULL;
-}
+// tilelayer.getTilesUrl = function(e){
+//     return NULL;
+// }
 
 
 /*自定义函数--end*/
 
-/*自定义标注图形-start*/
-function addMarker(point, index){  // 创建图标对象
-    var myIcon = new BMap.Icon("markers.png", new BMap.Size(23, 25), {
-// 指定定位位置。
-// 当标注显示在地图上时，其所指向的地理位置距离图标左上
-// 角各偏移10像素和25像素。您可以看到在本例中该位置即是
-        // 图标中央下端的尖角位置。
-        offset: new BMap.Size(10, 25),
-        // 设置图片偏移。
-        // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您
-        // 需要指定大图的偏移位置，此做法与css sprites技术类似。
-        imageOffset: new BMap.Size(0, 0 - index * 25)   // 设置图片偏移
-    });
-// 创建标注对象并添加到地图
-    var marker = new BMap.Marker(point, infopt);
-    map.addOverlay(marker);
-}
+// /*自定义标注图形-start*/
+// function addMarker(point, index){  // 创建图标对象
+//     var myIcon = new BMap.Icon("markers.png", new BMap.Size(23, 25), {
+// // 指定定位位置。
+// // 当标注显示在地图上时，其所指向的地理位置距离图标左上
+// // 角各偏移10像素和25像素。您可以看到在本例中该位置即是
+//         // 图标中央下端的尖角位置。
+//         offset: new BMap.Size(10, 25),
+//         // 设置图片偏移。
+//         // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您
+//         // 需要指定大图的偏移位置，此做法与css sprites技术类似。
+//         imageOffset: new BMap.Size(0, 0 - index * 25)   // 设置图片偏移
+//     });
+// // 创建标注对象并添加到地图
+//     var marker = new BMap.Marker(point, infopt);
+//     map.addOverlay(marker);
+// }
 /*自定义标注图形-end*/
 
 /*程序入口*/
 //创建地图
-var point = new BMap.Point(116.404, 39.915);//定位
-map.centerAndZoom(point,16);				//将point移到浏览器中心，并且zoom级别为15;
-var marker = new BMap.Marker(point);        // 创建标注
-var infoWindow = new BMap.InfoWindow("World", infopt);  // 创建信息窗口对象
+var point = new BMap.Point(121.404, 31.2);//定位于上海市古北
+map.centerAndZoom(point,6);				//将point移到浏览器中心，并且zoom级别为15;
+// var local = new BMap.LocalSearch("上海市",{renderOptions:{map:map,panel:"results"}}); //为本地搜索对象提供一个结果列表容器，搜索结果会自动添加到容器元素中
+var local = new BMap.LocalSearch("上海市",{renderOptions:{map:map,autoViewport: true},pageCapacity: 8});
+/*
+ *LocalSearch_Service
+ */
+// local.search("蓝村站");
+ local.searchNearby("银行", "人民广场");
+// local.searchInBounds("银行", map.getBounds());
+// var marker = new BMap.Marker(point);        // 创建标注
+// var infoWindow = new BMap.InfoWindow("I am a contributor 'Melonman'.", infopt);  // 创建信息窗口对象
 //        map.setZoom(3);                     //设置缩放等级3-19.
 //        window.setTimeout(function(){
 //
@@ -154,3 +168,7 @@ console.warn("34")
 console.log("是否使用高分辨率底图：" + map.highResolutionEnabled());
 console.log("地图容器Element：" + map.getContainer());
 console.log("当前地图中心点：" + map.getSize());
+
+/*
+ *LocalSearch_Service
+ */
