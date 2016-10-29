@@ -119,11 +119,13 @@ var point = new BMap.Point(121.404, 31.2);//定位于上海市古北
 map.centerAndZoom(point,6);				//将point移到浏览器中心，并且zoom级别为15;
 // var local = new BMap.LocalSearch("上海市",{renderOptions:{map:map,panel:"results"}}); //为本地搜索对象提供一个结果列表容器，搜索结果会自动添加到容器元素中
 var local = new BMap.LocalSearch("上海市",{renderOptions:{map:map,autoViewport: true},pageCapacity: 8});
+var trans = new BMap.TransitRoute(map,{renderOptions:{map:map,panel:"results"}});
 /*
  *LocalSearch_Service
  */
-// local.search("蓝村站");
- local.searchNearby("银行", "人民广场");
+// local.search("蓝村站");             //
+trans.search("人民银行","人民广场");    //公交站信息
+local.searchNearby("银行", "人民广场"); //本地搜索
 // local.searchInBounds("银行", map.getBounds());
 // var marker = new BMap.Marker(point);        // 创建标注
 // var infoWindow = new BMap.InfoWindow("I am a contributor 'Melonman'.", infopt);  // 创建信息窗口对象
