@@ -13,7 +13,7 @@ var infopt = {
     title : "Hello"  // 信息窗口标题
 }
 //折线图形参数
-var polyline = new BMap.Polyline([      //l find the argurment is array.import,so we know the foot.getPoints() is a array.
+var polyline = new BMap.Polyline([
         new BMap.Point(116.399, 39.910),
         new BMap.Point(116.402, 39.899)
     ],
@@ -107,42 +107,9 @@ function addMarker(point, index){  // 创建图标对象
 
 /*程序入口*/
 //创建地图
-var point = new BMap.Point(121.488, 31.24);//定位
-map.centerAndZoom(point,15);				//将point移到浏览器中心，并且zoom级别为15;
-
-/*CodeArea*/
-var transit = new BMap.TransitRoute(map);
-transit.setSearchCompleteCallback(function(results){
- if (transit.getStatus() == BMAP_STATUS_SUCCESS){
-    console.log("Hello");
-    var firstPlan = results.getPlan(1);
-    for (var i = 0; i < firstPlan.getNumRoutes(); i ++){
-      console.log("helo_getNumRoutes");
-      var foot = firstPlan.getRoute(i)
-      // console.log(foot.getPoints());
-      if(foot.getDistance(false) > 0){
-      //  map.addOverlay(new BMap.Polyline(foot., {lineColor: "green"})); //坑爹，自1.2后竟然废弃了getPoints();
-        map.addOverlay(new BMap.Polyline(foot.getPath(), {lineColor: "black"}));//http://developer.baidu.com/map/jsdemo.htm#i4_8 我在此发现了正确取代getPoints()的函数getPath();
-        console.log(firstPlan.getDescription());
-      }
-    }
-    for(var i = 0;i < firstPlan.getNumLines(); i ++){
-      var bus = firstPlan.getLine(i)
-      map.addOverlay(new BMap.Polyline(bus.getPath(),{lineColor:"blue"}));
-    }
-    var s = [];
-  for (i = 0; i < results.getNumPlans(); i ++){
-    s.push((i + 1) + ". " + results.getPlan(i).getDescription());
-  }
-  document.getElementById("log").innerHTML = s.join("<br>");
- }
-
-})
-transit.search("人民广场","东方明珠");
-
-/**/
-
-//基本地图标签
+var point = new BMap.Point(121.404, 31.215);//定位
+map.centerAndZoom(point,16);				//将point移到浏览器中心，并且zoom级别为15;
+var marker = new BMap.Marker(point);        // 创建标注
 var infoWindow = new BMap.InfoWindow("World", infopt);  // 创建信息窗口对象
 //        map.setZoom(3);                     //设置缩放等级3-19.
 //        window.setTimeout(function(){
@@ -170,7 +137,46 @@ map.addControl(new ZoomControl());                      //自定义控件，可�
 // map.addTileLayer(traffic);                          //将图层添加到地图上
 /*添加图层--end*/
 
+//增加标注拖拽
+marker.addEventListener("click", function(){           //标注点击弹跳出文字框
+    alert("hi");
+});
+marker.enableDragging();                    //可以拖拽标注
+marker.addEventListener("dragend", function(e){ //增加点击监听事件
+    alert("当前位置：" + e.point.lng + ", " + e.point.lat);
+})
+
+map.enableKeyboard();                      //开启键盘
+
 console.warn("34")
 console.log("是否使用高分辨率底图：" + map.highResolutionEnabled());
 console.log("地图容器Element：" + map.getContainer());
 console.log("当前地图中心点：" + map.getSize());
+var trans = new BMap.TransitRoute(map);
+// trans.search("广场","公园");
+trans.setSearchCompleteCallback(function(results){
+  console.log("huxu");
+ if (trans.getStatus() == BMAP_STATUS_SUCCESS){
+   var firstPlan = results.getPlan(0);
+   // 绘制步行线路
+   for (var i = 0; i < firstPlan.getNumRoutes(); i ++){
+     var walk = firstPlan.getRoute(i);
+     if (walk.getDistance(false) > 0){
+       // 步行线路有可能为0
+       map.addOverlay(new BMap.Polyline(walk.getPoints(), {lineColor: "green"}));
+     }
+   }
+  // 绘制公交线路
+   for (i = 0; i < firstPlan.getNumLines(); i ++){
+     var line = firstPlan.getLine(i);
+     map.addOverlay(new BMap.Polyline(line.getPoints()));
+   }
+   // 输出方案信息
+   var s = [];
+   for (i = 0; i < results.getNumPlans(); i ++){
+     s.push((i + 1) + ". " + results.getPlan(i).getDescription());
+   }
+   document.getElementById("log").innerHTML = s.join("<br>");
+ }
+})
+trans.search("中国银行","人民广场");
