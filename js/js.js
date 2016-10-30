@@ -111,34 +111,60 @@ var point = new BMap.Point(121.488, 31.24);//定位
 map.centerAndZoom(point,15);				//将point移到浏览器中心，并且zoom级别为15;
 
 /*CodeArea*/
-var transit = new BMap.TransitRoute(map);
-transit.setSearchCompleteCallback(function(results){
- if (transit.getStatus() == BMAP_STATUS_SUCCESS){
-    console.log("Hello");
-    var firstPlan = results.getPlan(1);
-    for (var i = 0; i < firstPlan.getNumRoutes(); i ++){
-      console.log("helo_getNumRoutes");
-      var foot = firstPlan.getRoute(i)
-      // console.log(foot.getPoints());
-      if(foot.getDistance(false) > 0){
-      //  map.addOverlay(new BMap.Polyline(foot., {lineColor: "green"})); //坑爹，自1.2后竟然废弃了getPoints();
-        map.addOverlay(new BMap.Polyline(foot.getPath(), {lineColor: "black"}));//http://developer.baidu.com/map/jsdemo.htm#i4_8 我在此发现了正确取代getPoints()的函数getPath();
-        console.log(firstPlan.getDescription());
+//第一种：驾车方案
+var options = {
+    onSearchComplete: function(results){
+      if(drive.getStatus() == BMAP_STATUS_SUCCESS){
+        var plan = results.getPlan(0);
+        // var route = plan.getRoute(0);
+        var s = [];
+        console.log(plan.getDistance(true));
+        alert("路程："+plan.getDistance(true)+" time:"+plan.getDuration(true));
+        for(var j = 0;j < plan.getNumRoutes();j++){
+          var route = plan.getRoute(j);
+          for(var i = 0;i < route.getNumSteps();i++){
+            var step = route.getStep(i);
+            s.push(i+1)+"."+step.getDescription();
+            map.addOverlay(new BMap.Polyline(route.getPath(),{lineColor:"black"}));
+            //
+          }
+        }
+
       }
     }
-    for(var i = 0;i < firstPlan.getNumLines(); i ++){
-      var bus = firstPlan.getLine(i)
-      map.addOverlay(new BMap.Polyline(bus.getPath(),{lineColor:"blue"}));
-    }
-    var s = [];
-  for (i = 0; i < results.getNumPlans(); i ++){
-    s.push((i + 1) + ". " + results.getPlan(i).getDescription());
-  }
-  document.getElementById("log").innerHTML = s.join("<br>");
- }
-
-})
-transit.search("人民广场","东方明珠");
+}
+var  drive = new BMap.DrivingRoute(map,options)
+drive.search("人民广场","东方明珠");
+//第二种：公交方案
+// var transit = new BMap.TransitRoute(map);
+// transit.setSearchCompleteCallback(function(results){
+//  if (transit.getStatus() == BMAP_STATUS_SUCCESS){
+//     console.log("Hello");
+//     var firstPlan = results.getPlan(1);
+//     for (var i = 0; i < firstPlan.getNumRoutes(); i ++){
+//       console.log("helo_getNumRoutes");
+//
+//       var foot = firstPlan.getRoute(i)
+//       // console.log(foot.getPoints());
+//       if(foot.getDistance(false) > 0){
+//       //  map.addOverlay(new BMap.Polyline(foot., {lineColor: "green"})); //坑爹，自1.2后竟然废弃了getPoints();
+//         map.addOverlay(new BMap.Polyline(foot.getPath(), {lineColor: "black"}));//http://developer.baidu.com/map/jsdemo.htm#i4_8 我在此发现了正确取代getPoints()的函数getPath();
+//         console.log(firstPlan.ge());
+//       }
+//     }
+//     for(var i = 0;i < firstPlan.getNumLines(); i ++){
+//       var bus = firstPlan.getLine(i)
+//       map.addOverlay(new BMap.Polyline(bus.getPath(),{lineColor:"blue"}));
+//     }
+//     var s = [];
+//   for (i = 0; i < results.getNumPlans(); i ++){
+//     s.push((i + 1) + ". " + results.getPlan(i).getDescription());
+//   }
+//   document.getElementById("log").innerHTML = s.join("<br>");
+//  }
+//
+// })
+// transit.search("人民广场","东方明珠");
 
 /**/
 
